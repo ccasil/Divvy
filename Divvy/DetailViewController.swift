@@ -14,7 +14,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var memberTextField: UITextField!
     @IBOutlet weak var taxTextField: UITextField!
     @IBOutlet weak var tipSlider: UISlider!
-    @IBOutlet weak var percentLabel: UILabel!
+    @IBOutlet weak var percentTextField: UITextField!
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var subtotalLabel: UILabel!
     @IBOutlet weak var taxLabel: UILabel!
@@ -23,23 +23,32 @@ class DetailViewController: UIViewController {
     var itemData = [Item]()
     
     var total: Double = 0.0
+    var percent: Double = 15
     
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
     let managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchAllItems()
-        percentLabel.text = "15%"
+        percentTextField.text = "15"
         self.hideKeyboardWhenTappedAround()
+        percentTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
     }
     
-    var percent: Double = 15
+    @objc func textFieldDidChange(textField: UITextField) {
+        if let stringValue = percentTextField.text{
+            if let intValue = Int(stringValue){
+                tipSlider.value = Float(intValue)
+                percent = Double(intValue)
+            }
+        }
+
+    }
+    
     @IBAction func percentSlider(_ sender: UISlider) {
-        let slidep: Double = Double(sender.value)
-        percent = slidep
-        percentLabel.text = String(percent) + "%"
+        percent = Double(sender.value)
+        percentTextField.text = String(percent)
     }
     
     @IBAction func calculateButtonPressed(_ sender: Any) {
