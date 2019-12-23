@@ -16,6 +16,8 @@
 		4A10021023A89DB7006B4F72 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A10020E23A89DB7006B4F72 /* LaunchScreen.storyboard */; };
 		4A10021B23A89DB8006B4F72 /* DivvyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A10021A23A89DB8006B4F72 /* DivvyTests.swift */; };
 		4A10022623A89DB8006B4F72 /* DivvyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A10022523A89DB8006B4F72 /* DivvyUITests.swift */; };
+		4AB52A5423AED1EB004D6DD3 /* ItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB52A5323AED1EB004D6DD3 /* ItemViewController.swift */; };
+		4AB52A5623B00A50004D6DD3 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB52A5523B00A50004D6DD3 /* DetailViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		4A10022123A89DB8006B4F72 /* DivvyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DivvyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A10022523A89DB8006B4F72 /* DivvyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DivvyUITests.swift; sourceTree = "<group>"; };
 		4A10022723A89DB8006B4F72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4AB52A5323AED1EB004D6DD3 /* ItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewController.swift; sourceTree = "<group>"; };
+		4AB52A5523B00A50004D6DD3 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +109,8 @@
 				4A10020223A89DB6006B4F72 /* SceneDelegate.swift */,
 				4A10020423A89DB6006B4F72 /* ViewController.swift */,
 				4A10020623A89DB6006B4F72 /* Main.storyboard */,
+				4AB52A5323AED1EB004D6DD3 /* ItemViewController.swift */,
+				4AB52A5523B00A50004D6DD3 /* DetailViewController.swift */,
 				4A10020C23A89DB7006B4F72 /* Assets.xcassets */,
 				4A10020E23A89DB7006B4F72 /* LaunchScreen.storyboard */,
 				4A10021123A89DB7006B4F72 /* Info.plist */,
@@ -264,6 +270,8 @@
 			files = (
 				4A10020B23A89DB6006B4F72 /* Divvy.xcdatamodeld in Sources */,
 				4A10020523A89DB6006B4F72 /* ViewController.swift in Sources */,
+				4AB52A5423AED1EB004D6DD3 /* ItemViewController.swift in Sources */,
+				4AB52A5623B00A50004D6DD3 /* DetailViewController.swift in Sources */,
 				4A10020123A89DB6006B4F72 /* AppDelegate.swift in Sources */,
 				4A10020323A89DB6006B4F72 /* SceneDelegate.swift in Sources */,
 			);
