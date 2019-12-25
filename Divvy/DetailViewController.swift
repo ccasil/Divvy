@@ -20,9 +20,20 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var taxLabel: UILabel!
     @IBOutlet weak var tipLabel: UILabel!
     
+    @IBOutlet weak var allSubtotalLabel: UILabel!
+    @IBOutlet weak var allTaxLabel: UILabel!
+    @IBOutlet weak var allTipLabel: UILabel!
+    @IBOutlet weak var allTotalLabel: UILabel!
+    
+    @IBOutlet weak var groupSubtotalLabel: UILabel!
+    @IBOutlet weak var groupTaxLabel: UILabel!
+    @IBOutlet weak var groupTipLabel: UILabel!
+    @IBOutlet weak var groupTotalLabel: UILabel!
+    
     var itemData = [Item]()
     
     var total: Double = 0.0
+    var grouptotal: Double = 0.0
     var percent: Double = 15
     
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
@@ -32,6 +43,7 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         fetchAllItems()
         percentTextField.text = "15"
+        taxTextField.text = "7.25"
         self.hideKeyboardWhenTappedAround()
         percentTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
     }
@@ -48,30 +60,45 @@ class DetailViewController: UIViewController {
     
     @IBAction func percentSlider(_ sender: UISlider) {
         percent = Double(sender.value)
-        percentTextField.text = String(percent)
+        percentTextField.text = String(format: "%.f", percent)
     }
     
     @IBAction func calculateButtonPressed(_ sender: Any) {
         fetchAllItems()
         total = 0.00
+        grouptotal = 0.00
         if itemData.count > 0 {
+            for item in itemData {
+                if item.group == true {
+                    grouptotal += item.price
+                    
+                }
+            }
             for item in itemData {
                 total += item.price
             }
             let subtotal: Double = total
-            print("SUBTOTAL", subtotal)
+//            print("SUBTOTAL", subtotal)
             if let unwrappedmembers = Double(memberTextField.text ?? "1") {
                 let members = unwrappedmembers
-                print("MEMBERS", members)
-                subtotalLabel.text = String(subtotal / members)
+//                print("MEMBERS", members)
+                subtotalLabel.text = String(format: "%.2f", subtotal / members)
+                groupSubtotalLabel.text = String(format: "%.2f", grouptotal / members)
+                allSubtotalLabel.text = String(format: "%.2f", subtotal)
                 if let unwrappedtax = Double(taxTextField.text ?? "1") {
                     let totaltax = Double(subtotal) * (unwrappedtax * 0.01)
-                    print("TAX", totaltax)
-                    taxLabel.text = String(totaltax / members)
+//                    print("TAX", totaltax)
+                    taxLabel.text = String(format: "%.2f", totaltax / members)
+                    groupTaxLabel.text = String(format: "%.2f", totaltax / members)
+                    allTaxLabel.text = String(format: "%.2f", totaltax)
                     let totaltip = (percent * 0.01) * subtotal
-                    print("TIP", totaltip)
-                    tipLabel.text = String(totaltip / members)
-                    totalLabel.text = String((subtotal + totaltax + totaltip) / members)
+//                    print("TIP", totaltip)
+                    tipLabel.text = String(format: "%.2f", totaltip / members)
+                    groupTipLabel.text = String(format: "%.2f", totaltip / members)
+                    allTipLabel.text = String(format: "%.2f", totaltip)
+                    totalLabel.text = String(format: "%.2f", (subtotal + totaltax + totaltip) / members)
+                    groupTotalLabel.text = String(format: "%.2f", (grouptotal + totaltax + totaltip) / members)
+                    allTotalLabel.text = String(format: "%.2f", subtotal + totaltax + totaltip)
                 }
             } else {
                 print("Missing members.")
@@ -88,14 +115,37 @@ class DetailViewController: UIViewController {
             print (error)
         }
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    
+    @IBAction func clearButtonPressed(_ sender: Any) {
+        memberTextField.text = ""
+        taxTextField.text = "7.25"
+        percentTextField.text = "15"
+        tipSlider.value = 15
+        subtotalLabel.text = ""
+        taxLabel.text = ""
+        tipLabel.text = ""
+        totalLabel.text = ""
+        allSubtotalLabel.text = ""
+        allTaxLabel.text = ""
+        allTipLabel.text = ""
+        allTotalLabel.text = ""
+        self.deleteAllData(entity: "Item")
     }
-    */
+    
+    func deleteAllData(entity: String) {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: entity)
+        request.returnsObjectsAsFaults = false
+        do {
+            let result = try self.managedObjectContext.fetch(request)
+            for managedObject in result {
+                let managedObjectData:NSManagedObject = managedObject as! NSManagedObject
+                self.managedObjectContext.delete(managedObjectData)
+            }
+        } catch {
+            print (error)
+        }
+    }
+    
 
 }
