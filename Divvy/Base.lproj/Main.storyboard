@@ -124,12 +124,12 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="Iqd-Ps-FZh">
-                                <rect key="frame" x="8" y="212" width="398" height="685.5"/>
+                                <rect key="frame" x="8" y="212" width="398" height="914"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="anu-WY-nth">
                                         <rect key="frame" x="0.0" y="0.0" width="398" height="228.5"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Per Person:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="znu-4A-jHc">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Average for Single Items:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="znu-4A-jHc">
                                                 <rect key="frame" x="0.0" y="0.0" width="398" height="20.5"/>
                                                 <color key="backgroundColor" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -366,6 +366,12 @@
                                             </stackView>
                                         </subviews>
                                     </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Output Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nD3-ed-dtl">
+                                        <rect key="frame" x="0.0" y="685.5" width="398" height="228.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -395,6 +401,7 @@
                         <outlet property="groupTipLabel" destination="Xh8-v5-Krj" id="Z0W-cV-k9e"/>
                         <outlet property="groupTotalLabel" destination="l6v-Bq-DFf" id="Obf-LT-sJx"/>
                         <outlet property="memberTextField" destination="s6H-qC-JZ5" id="zil-z6-ole"/>
+                        <outlet property="outputLabel" destination="nD3-ed-dtl" id="J5M-VL-TFv"/>
                         <outlet property="percentTextField" destination="2If-jQ-9PM" id="9I2-HS-0cJ"/>
                         <outlet property="subtotalLabel" destination="7uT-ER-i9c" id="caB-JS-PJn"/>
                         <outlet property="taxLabel" destination="ZX4-FN-0qn" id="pNI-pe-sTj"/>

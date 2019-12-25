@@ -30,10 +30,13 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var groupTipLabel: UILabel!
     @IBOutlet weak var groupTotalLabel: UILabel!
     
+    @IBOutlet weak var outputLabel: UILabel!
+    
     var itemData = [Item]()
     
-    var total: Double = 0.0
+    var singletotal: Double = 0.0
     var grouptotal: Double = 0.0
+    var alltotal: Double = 0.0
     var percent: Double = 15
     
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
@@ -44,8 +47,19 @@ class DetailViewController: UIViewController {
         fetchAllItems()
         percentTextField.text = "15"
         taxTextField.text = "7.25"
+        outputLabel.text = ""
         self.hideKeyboardWhenTappedAround()
         percentTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+    }
+    
+    func fetchAllItems() {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
+        do {
+            let result = try managedObjectContext.fetch(request)
+            itemData = result as! [Item]
+        } catch {
+            print (error)
+        }
     }
     
     @objc func textFieldDidChange(textField: UITextField) {
@@ -65,54 +79,55 @@ class DetailViewController: UIViewController {
     
     @IBAction func calculateButtonPressed(_ sender: Any) {
         fetchAllItems()
-        total = 0.00
+        singletotal = 0.00
+        alltotal = 0.00
         grouptotal = 0.00
         if itemData.count > 0 {
             for item in itemData {
                 if item.group == true {
                     grouptotal += item.price
-                    
+                } else if item.group == false {
+                    singletotal += item.price
                 }
+                alltotal += item.price
             }
-            for item in itemData {
-                total += item.price
-            }
-            let subtotal: Double = total
-//            print("SUBTOTAL", subtotal)
+            let singlesubtotal: Double = singletotal
+            let subtotal: Double = alltotal
             if let unwrappedmembers = Double(memberTextField.text ?? "1") {
                 let members = unwrappedmembers
-//                print("MEMBERS", members)
-                subtotalLabel.text = String(format: "%.2f", subtotal / members)
+                subtotalLabel.text = String(format: "%.2f", singlesubtotal / members)
                 groupSubtotalLabel.text = String(format: "%.2f", grouptotal / members)
                 allSubtotalLabel.text = String(format: "%.2f", subtotal)
                 if let unwrappedtax = Double(taxTextField.text ?? "1") {
-                    let totaltax = Double(subtotal) * (unwrappedtax * 0.01)
-//                    print("TAX", totaltax)
-                    taxLabel.text = String(format: "%.2f", totaltax / members)
-                    groupTaxLabel.text = String(format: "%.2f", totaltax / members)
+                    let totaltax = Double(alltotal) * (unwrappedtax * 0.01)
+                    let totaltip = (percent * 0.01) * alltotal
+                    if subtotalLabel.text == "0.00" {
+                        taxLabel.text = ""
+                        tipLabel.text = ""
+                        totalLabel.text = ""
+                        subtotalLabel.text = ""
+                    } else {
+                        taxLabel.text = String(format: "%.2f", totaltax / members)
+                        tipLabel.text = String(format: "%.2f", totaltip / members)
+                        totalLabel.text = String(format: "%.2f", (singlesubtotal + totaltax + totaltip) / members)
+                    }
+                    if groupSubtotalLabel.text == "0.00" {
+                        groupTaxLabel.text = ""
+                        groupTipLabel.text = ""
+                        groupTotalLabel.text = ""
+                        groupSubtotalLabel.text = ""
+                    } else {
+                        groupTaxLabel.text = String(format: "%.2f", totaltax / members)
+                        groupTipLabel.text = String(format: "%.2f", totaltip / members)
+                        groupTotalLabel.text = String(format: "%.2f", (grouptotal + totaltax + totaltip) / members)
+                    }
                     allTaxLabel.text = String(format: "%.2f", totaltax)
-                    let totaltip = (percent * 0.01) * subtotal
-//                    print("TIP", totaltip)
-                    tipLabel.text = String(format: "%.2f", totaltip / members)
-                    groupTipLabel.text = String(format: "%.2f", totaltip / members)
                     allTipLabel.text = String(format: "%.2f", totaltip)
-                    totalLabel.text = String(format: "%.2f", (subtotal + totaltax + totaltip) / members)
-                    groupTotalLabel.text = String(format: "%.2f", (grouptotal + totaltax + totaltip) / members)
                     allTotalLabel.text = String(format: "%.2f", subtotal + totaltax + totaltip)
                 }
             } else {
-                print("Missing members.")
+                memberTextField.attributedPlaceholder = NSAttributedString(string: "Required", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red]);                outputLabel.text = ""
             }
-        }
-    }
-    
-    func fetchAllItems() {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
-        do {
-            let result = try managedObjectContext.fetch(request)
-            itemData = result as! [Item]
-        } catch {
-            print (error)
         }
     }
     
@@ -130,6 +145,12 @@ class DetailViewController: UIViewController {
         allTaxLabel.text = ""
         allTipLabel.text = ""
         allTotalLabel.text = ""
+        groupSubtotalLabel.text = ""
+        groupTaxLabel.text = ""
+        groupTipLabel.text = ""
+        groupTotalLabel.text = ""
+        outputLabel.text = ""
+        memberTextField.placeholder = ""
         self.deleteAllData(entity: "Item")
     }
     
