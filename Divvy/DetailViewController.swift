@@ -34,7 +34,7 @@ class DetailViewController: UIViewController {
     
     var itemData = [Item]()
     
-    var singletotal: Double = 0.0
+    var singletotal: [Double] = []
     var grouptotal: Double = 0.0
     var alltotal: Double = 0.0
     var percent: Double = 15
@@ -79,23 +79,29 @@ class DetailViewController: UIViewController {
     
     @IBAction func calculateButtonPressed(_ sender: Any) {
         fetchAllItems()
-        singletotal = 0.00
+        singletotal = []
         alltotal = 0.00
         grouptotal = 0.00
+        subtotalLabel.text = ""
+        totalLabel.text = ""
         if itemData.count > 0 {
             for item in itemData {
                 if item.group == true {
                     grouptotal += item.price
                 } else if item.group == false {
-                    singletotal += item.price
+                    singletotal.append(item.price)
                 }
                 alltotal += item.price
             }
-            let singlesubtotal: Double = singletotal
+            let singlesubtotal: [Double] = singletotal
             let subtotal: Double = alltotal
             if let unwrappedmembers = Double(memberTextField.text ?? "1") {
                 let members = unwrappedmembers
-                subtotalLabel.text = String(format: "%.2f", singlesubtotal / members)
+                for item in singlesubtotal {
+                    print(item)
+                    subtotalLabel.text! += (String(item) + "\n")
+//                    subtotalLabel.text = String(format: "%.2f", singlesubtotal[item] / members)
+                }
                 groupSubtotalLabel.text = String(format: "%.2f", grouptotal / members)
                 allSubtotalLabel.text = String(format: "%.2f", subtotal)
                 if let unwrappedtax = Double(taxTextField.text ?? "1") {
@@ -109,7 +115,10 @@ class DetailViewController: UIViewController {
                     } else {
                         taxLabel.text = String(format: "%.2f", totaltax / members)
                         tipLabel.text = String(format: "%.2f", totaltip / members)
-                        totalLabel.text = String(format: "%.2f", (singlesubtotal + totaltax + totaltip) / members)
+                        for item in singlesubtotal {
+                            totalLabel.text! += (String(format: "%.2f", item + (totaltax / members) + (totaltip / members)) + "\n")
+                        }
+//                        totalLabel.text = String(format: "%.2f", (singlesubtotal + totaltax + totaltip) / members)
                     }
                     if groupSubtotalLabel.text == "0.00" {
                         groupTaxLabel.text = ""
@@ -133,25 +142,36 @@ class DetailViewController: UIViewController {
     
     
     @IBAction func clearButtonPressed(_ sender: Any) {
-        memberTextField.text = ""
-        taxTextField.text = "7.25"
-        percentTextField.text = "15"
-        tipSlider.value = 15
-        subtotalLabel.text = ""
-        taxLabel.text = ""
-        tipLabel.text = ""
-        totalLabel.text = ""
-        allSubtotalLabel.text = ""
-        allTaxLabel.text = ""
-        allTipLabel.text = ""
-        allTotalLabel.text = ""
-        groupSubtotalLabel.text = ""
-        groupTaxLabel.text = ""
-        groupTipLabel.text = ""
-        groupTotalLabel.text = ""
-        outputLabel.text = ""
-        memberTextField.placeholder = ""
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let  deleteButton = UIAlertAction(title: "Delete App Data", style: .destructive, handler: { (action) -> Void in
+        
+            self.memberTextField.text = ""
+            self.taxTextField.text = "7.25"
+            self.percentTextField.text = "15"
+            self.tipSlider.value = 15
+            self.subtotalLabel.text = ""
+            self.taxLabel.text = ""
+            self.tipLabel.text = ""
+            self.totalLabel.text = ""
+            self.allSubtotalLabel.text = ""
+            self.allTaxLabel.text = ""
+            self.allTipLabel.text = ""
+            self.allTotalLabel.text = ""
+            self.groupSubtotalLabel.text = ""
+            self.groupTaxLabel.text = ""
+            self.groupTipLabel.text = ""
+            self.groupTotalLabel.text = ""
+            self.outputLabel.text = ""
+            self.memberTextField.placeholder = ""
         self.deleteAllData(entity: "Item")
+        })
+        let cancelButton = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) -> Void in
+        })
+        
+        alertController.addAction(deleteButton)
+        alertController.addAction(cancelButton)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func deleteAllData(entity: String) {
