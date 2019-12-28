@@ -29,7 +29,6 @@ class ItemViewController: UIViewController {
         tableView.delegate = self
         fetchAllItems()
         tableView.reloadData()
-        
         self.hideKeyboardWhenTappedAround()
     }
     
@@ -37,11 +36,6 @@ class ItemViewController: UIViewController {
         super.viewWillAppear(animated)
         fetchAllItems()
         tableView.reloadData()
-        
-        if tableData.count == 0 {
-            self.title = "Add Items"
-            priceTextField.placeholder = "price"
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -102,6 +96,4 @@ extension ItemViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.reloadData()
         }
     }
-    
-    
 }
