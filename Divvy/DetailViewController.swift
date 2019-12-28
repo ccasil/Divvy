@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 
 class DetailViewController: UIViewController {
+    
     @IBOutlet weak var tableView: UITableView!
     
     @IBOutlet weak var memberTextField: UITextField!
@@ -45,7 +46,12 @@ class DetailViewController: UIViewController {
     var singletotal: [Double] = []
     var grouptotal: Double = 0.0
     var alltotal: Double = 0.0
-    var percent: Double = 15
+    var percent: Int = 15
+    
+    var singlesub: String = ""
+    var singletot: String = ""
+    var groupsinglesub: String = ""
+    var groupsingletot: String = ""
     
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
     let managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -53,12 +59,15 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchAllItems()
+        tableView.reloadData()
         percentTextField.text = "15"
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = UITableView.automaticDimension
         self.hideKeyboardWhenTappedAround()
         percentTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: UIControl.Event.editingChanged)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     func fetchAllItems() {
@@ -75,15 +84,14 @@ class DetailViewController: UIViewController {
         if let stringValue = percentTextField.text{
             if let intValue = Int(stringValue){
                 tipSlider.value = Float(intValue)
-                percent = Double(intValue)
+                percent = intValue
             }
         }
-
     }
     
     @IBAction func percentSlider(_ sender: UISlider) {
-        percent = Double(sender.value)
-        percentTextField.text = String(format: "%.f", percent)
+        percent = Int(sender.value)
+        percentTextField.text = String(percent)
     }
     
     func clearTable() {
@@ -103,12 +111,21 @@ class DetailViewController: UIViewController {
         items[3][1][1] = ""
         items[3][2][1] = ""
         items[3][3][1] = ""
+        singlesub = ""
+        singletot = ""
+        groupsinglesub = ""
+        groupsingletot = ""
+        alltotal = 0.00
+        grouptotal = 0.00
+        singletotal = []
         tableView.reloadData()
     }
     
     @IBAction func calculateButtonPressed(_ sender: Any) {
         fetchAllItems()
         clearTable()
+        tableView.reloadData()
+        print(items)
         alltotal = 0.00
         grouptotal = 0.00
         if itemData.count > 0 {
@@ -121,29 +138,68 @@ class DetailViewController: UIViewController {
                 alltotal += item.price
             }
             items[3][0][1] = String(alltotal)
-            let singlesubtotal: [Double] = singletotal
+            var singlesubtotal: [Double] = singletotal
             if let unwrappedmembers = Double(memberTextField.text ?? "1") {
                 let members = unwrappedmembers
                 items[1][0][1] = String(format: "%.2f", grouptotal / members)
-                if let unwrappedtax = Double(taxTextField.text ?? "1") {
+                if let unwrappedtax = Double(taxTextField.text ?? "0") {
                     let totaltax = Double(alltotal) * (unwrappedtax * 0.01)
-                    let totaltip = (percent * 0.01) * alltotal
-                    items[0][1][1] = String(format: "%.2f", totaltax / members)
-                    items[1][1][1] = String(format: "%.2f", totaltax / members)
-                    items[2][1][1] = String(format: "%.2f", totaltax / members)
-                    items[3][1][1] = String(format: "%.2f", totaltax)
-                    items[0][2][1] = String(format: "%.2f", totaltip / members)
-                    items[1][2][1] = String(format: "%.2f", totaltip / members)
-                    items[2][2][1] = String(format: "%.2f", totaltip / members)
-                    items[3][2][1] = String(format: "%.2f", totaltip)
-                    for item in singlesubtotal {
-                        items[0][0][1] += (String(item) + "\n")
-                        items[0][3][1] += (String(format: "%.2f", item + (totaltax / members) + (totaltip / members)) + "\n")
-                        items[2][0][1] += (String(format: "%.2f", item + (grouptotal / members)) + "\n")
-                        items[2][3][1] += (String(format: "%.2f", (item + (grouptotal / members)) + (totaltax / members) + (totaltip / members)) + "\n")
+                    let totaltip = (Double(percent) * 0.01) * alltotal
+                    if singletotal == [] {
+                        items[0][1][1] = ""
+                        items[0][2][1] = ""
+                        items[2][1][1] = ""
+                        items[2][2][1] = ""
+                    } else {
+                        items[0][1][1] = String(format: "%.2f", totaltax / members)
+                        
+                        items[0][2][1] = String(format: "%.2f", totaltip / members)
+                        items[2][1][1] = String(format: "%.2f", totaltax / members)
+                        items[2][2][1] = String(format: "%.2f", totaltip / members)
                     }
-                    items[1][3][1] = String(format: "%.2f", (grouptotal / members) + (totaltax / members) + (totaltip / members))
+                    if grouptotal == 0.0 {
+                        items[1][0][1] = ""
+                        items[1][1][1] = ""
+                        items[1][2][1] = ""
+                        items[1][3][1] = ""
+                    } else {
+                        items[1][1][1] = String(format: "%.2f", totaltax / members)
+                        items[1][2][1] = String(format: "%.2f", totaltip / members)
+                        items[1][3][1] = String(format: "%.2f", (grouptotal / members) + (totaltax / members) + (totaltip / members))
+                    }
+                    if (singlesub == "" || singletot == "" || groupsinglesub == "" || groupsingletot == "") {
+                        for item in singlesubtotal {
+                            singlesub += String(format: "%.2f", item) + "\n"
+                             singletot += String(format: "%.2f", item + (totaltax / members) + (totaltip / members)) + "\n"
+                            groupsinglesub += String(format: "%.2f", item + (grouptotal / members)) + "\n"
+                            groupsingletot += String(format: "%.2f", (item + (grouptotal / members)) + (totaltax / members) + (totaltip / members)) + "\n"
+                        }
+                        items[0][0][1] = singlesub
+                        items[0][3][1] = singletot
+                        items[2][0][1] = groupsinglesub
+                        items[2][3][1] = groupsingletot
+                        tableView.reloadData()
+                    } else {
+                        clearTable()
+                        grouptotal = 0.0
+                        alltotal = 0.0
+                        singletotal = []
+                        singlesubtotal = []
+                        singlesub = ""
+                        singletot = ""
+                        groupsinglesub = ""
+                        groupsingletot = ""
+                        items[0][0][1] = singlesub
+                        items[0][3][1] = singletot
+                        items[2][0][1] = groupsinglesub
+                        items[2][3][1] = groupsingletot
+                        tableView.reloadData()
+                    }
+                    items[3][1][1] = String(format: "%.2f", totaltax)
+                    items[3][2][1] = String(format: "%.2f", totaltip)
                     items[3][3][1] = String(format: "%.2f", alltotal + totaltax + totaltip)
+
+                    tableView.reloadData()
                 }
             } else {
                 memberTextField.attributedPlaceholder = NSAttributedString(string: "Required", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red]);
@@ -161,8 +217,12 @@ class DetailViewController: UIViewController {
             self.percentTextField.text = "15"
             self.tipSlider.value = 15
             self.memberTextField.placeholder = ""
+            self.singletotal = []
+            self.grouptotal = 0.0
+            self.alltotal = 0.0
             self.clearTable()
-        self.deleteAllData(entity: "Item")
+            self.deleteAllData(entity: "Item")
+            self.tableView.reloadData()
         })
         let cancelButton = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) -> Void in
         })
@@ -185,8 +245,6 @@ class DetailViewController: UIViewController {
             print (error)
         }
     }
-    
-
 }
 
 extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
@@ -200,15 +258,12 @@ extension DetailViewController: UITableViewDelegate, UITableViewDataSource {
         return sections[section]
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30
+        return 40
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "AmountCell", for: indexPath)
-        cell.textLabel?.text = items[indexPath.section][indexPath.row][0]
-        cell.detailTextLabel?.text = items[indexPath.section][indexPath.row][1]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AmountCell", for: indexPath) as! AmountTableViewCell
+        cell.titleLabel.text = items[indexPath.section][indexPath.row][0]
+        cell.detailLabel.text = items[indexPath.section][indexPath.row][1]
         return cell
     }
-    
-    
 }

@@ -70,8 +70,6 @@ class ItemViewController: UIViewController {
     func fetchAllItems() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
         do {
-//            let sort = NSSortDescriptor(key: #keyPath(Item.price), ascending: false)
-//            request.sortDescriptors = [sort]
             tableData = try managedObjectContext.fetch(request) as! [Item]
         } catch {
             print (error)
