@@ -14,6 +14,7 @@ class ItemViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var priceTextField: UITextField!
     @IBOutlet weak var groupSwitch: UISwitch!
+    @IBOutlet weak var errorLabel: UILabel!
     
     var tableData = [Item]()
     
@@ -25,6 +26,7 @@ class ItemViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        errorLabel.text = ""
         tableView.dataSource = self
         tableView.delegate = self
         fetchAllItems()
@@ -44,22 +46,24 @@ class ItemViewController: UIViewController {
 
     
     @IBAction func addItemButtonPressed(_ sender: Any) {
-        
         if !priceTextField.text!.isEmpty {
+            errorLabel.text = ""
             let item = NSEntityDescription.insertNewObject(forEntityName: "Item", into: managedObjectContext) as! Item
-            if let unwrapped = Double(priceTextField.text ?? "0.00"){
-                item.price = unwrapped
+            if let unwrapped = Double(priceTextField.text ?? "0.00") {
+                let unwrappedround = Double(round(100*unwrapped)/100)
+                item.price = unwrappedround
+                item.group = groupSwitch.isOn
+                print(item.group)
+                appDelegate.saveContext()
+                fetchAllItems()
+                tableView.reloadData()
+                priceTextField.text = ""
             } else {
+                errorLabel.text = "check price"
                 print("Needs to be a Double")
             }
-            item.group = groupSwitch.isOn
-            print(item.group)
-            appDelegate.saveContext()
-            fetchAllItems()
-            tableView.reloadData()
-            priceTextField.text = ""
-            }
         }
+    }
     
     func fetchAllItems() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
