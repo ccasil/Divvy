@@ -15,17 +15,25 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Divvy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCb-5S-gkK">
-                                <rect key="frame" x="130" y="415" width="154" height="66"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Divvy." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCb-5S-gkK">
+                                <rect key="frame" x="123" y="415" width="168" height="66"/>
                                 <fontDescription key="fontDescription" type="system" weight="black" pointSize="55"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="© 2020 Cesar Kyle Casil" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i3O-HA-Wlp">
+                                <rect key="frame" x="99.5" y="792" width="215" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="i3O-HA-Wlp" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="RGt-K4-ZtE"/>
                             <constraint firstItem="lCb-5S-gkK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hqL-mg-W5u"/>
                             <constraint firstItem="lCb-5S-gkK" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="i7h-Vu-EF0"/>
+                            <constraint firstAttribute="bottom" secondItem="i3O-HA-Wlp" secondAttribute="bottom" constant="80" id="kir-vH-0Rj"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
