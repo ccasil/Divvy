@@ -191,7 +191,7 @@ class DetailViewController: UIViewController {
         
         let  deleteButton = UIAlertAction(title: "Delete App Data", style: .destructive, handler: { (action) -> Void in
             self.memberTextField.text = ""
-            self.taxTextField.text = "7.25"
+            self.taxTextField.text = "9.25"
             self.percentTextField.text = "15"
             self.tipSlider.value = 15
             self.memberTextField.placeholder = ""
